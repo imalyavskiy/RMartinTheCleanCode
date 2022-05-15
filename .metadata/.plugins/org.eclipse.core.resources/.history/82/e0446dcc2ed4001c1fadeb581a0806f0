@@ -1,0 +1,8 @@
+package ArgsParserClean;
+
+public class ArgsParserClean {
+
+	public static void main(String[] args) {
+	}
+
+}
