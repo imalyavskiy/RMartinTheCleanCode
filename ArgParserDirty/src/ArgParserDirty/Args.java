@@ -11,7 +11,7 @@ public class Args
 	private Set<Character> unexpectedArguments = new TreeSet<Character>();
 	private Map<Character, BooleanArgumentMarshaler> booleanArgs = new HashMap<Character, BooleanArgumentMarshaler>();
 	private Map<Character, StringArgumentMarshaler> stringArgs = new HashMap<Character, StringArgumentMarshaler>();
-	private Map<Character, Integer> intArgs = new HashMap<Character, Integer>();
+	private Map<Character, IntegerArgumentMarshaler> intArgs = new HashMap<Character, IntegerArgumentMarshaler>();
 	private Set<Character> argsFound = new HashSet<Character>();
 	private int currentArgument;
 	private char errorArgumentId = '\0';
@@ -101,7 +101,7 @@ public class Args
 	
 	private void parseIntegerSchemaElement(char elementId) 
 	{
-		intArgs.put(elementId, 0);
+		intArgs.put(elementId, new IntegerArgumentMarshaler());
 	}
 	
 	private void parseStringSchemaElement(char elementId) 
@@ -200,7 +200,7 @@ public class Args
 		try 
 		{
 			parameter = args[currentArgument];
-			intArgs.put(argChar, Integer.valueOf(parameter));
+			intArgs.get(argChar).setInteger(Integer.valueOf(parameter));
 		} 
 		catch (ArrayIndexOutOfBoundsException e) 
 		{
@@ -316,7 +316,8 @@ public class Args
 	
 	public int getInt(char arg) 
 	{
-		return zeroIfNull(intArgs.get(arg));
+		Args.ArgumentMarshaler am = intArgs.get(arg);
+		return am == null ? 0 : am.getInteger();
 	}
 		
 	public boolean getBoolean(char arg) 
@@ -343,6 +344,7 @@ public class Args
 	{
 		private boolean booleanValue = false;
 		private String stringValue;
+		private int integerValue;
 		
 		public void setBoolean(boolean value) 
 		{
@@ -362,6 +364,16 @@ public class Args
 		public String getString() 
 		{
 			return stringValue == null ? "" : stringValue;
+		}
+		
+		public void setInteger(int i) 
+		{
+			integerValue = i;
+		}
+		
+		public int getInteger() 
+		{
+			return integerValue;
 		}
 	}
 	
