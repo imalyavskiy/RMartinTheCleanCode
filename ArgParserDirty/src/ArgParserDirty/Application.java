@@ -12,14 +12,17 @@ public class Application {
 			Args arg = new Args("l,p#,d*", args);
 			if(!arg.isValid())
 			{
-				throw new Exception("Parsing failed.");
+				String error = arg.errorMessage();
+				throw new Exception(error);
 			}
 			
+			
 			boolean logging = arg.getBoolean('l');
+			int port = arg.getInt('p');
 			String directory = arg.getString('d');
 			
 			Application app = new Application();
-			app.execute(logging, directory);
+			app.execute(logging, port, directory);
 		} 
 		catch (ParseException e) 
 		{
@@ -32,8 +35,8 @@ public class Application {
 		
 	}
 	
-	private void execute(boolean logging, String directory)
+	private void execute(boolean logging, int port, String directory)
 	{
-		System.out.println(String.format("execute: logging=%b, directory=%s", logging, directory));
+		System.out.println(String.format("execute: logging=%b, port=%d, directory=%s", logging, port, directory));
 	}
 }
