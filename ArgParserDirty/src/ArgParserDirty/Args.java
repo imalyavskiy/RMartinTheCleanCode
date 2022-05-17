@@ -164,11 +164,11 @@ public class Args
 			}
 			else if (m instanceof StringArgumentMarshaler)
 			{
-				setStringArg(m);
+				m.set(currentArgument);
 			}
 			else if (m instanceof IntegerArgumentMarshaler)
 			{
-				setIntArg(m);
+				m.set(currentArgument);
 			}
 		}
 		catch (ArgsException e) 
@@ -179,44 +179,6 @@ public class Args
 		}		
 		
 		return true;
-	}
-	
-	private void setIntArg(ArgumentMarshaler m) throws ArgsException 
-	{
-		String parameter = null;
-
-		try 
-		{
-			parameter = currentArgument.next();
-			m.set(parameter);
-		} 
-		catch (NoSuchElementException e) 
-		{
-			valid = false;
-			errorCode = ErrorCode.MISSING_INTEGER;
-			throw new ArgsException();
-		} 
-		catch (ArgsException e) 
-		{
-			valid = false;
-			errorParameter = parameter;
-			errorCode = ErrorCode.INVALID_INTEGER;
-			throw e;
-		}
-	}
-	
-	private void setStringArg(ArgumentMarshaler m) throws ArgsException 
-	{
-		try 
-		{
-			m.set(currentArgument.next());
-		} 
-		catch (NoSuchElementException e) 
-		{
-			valid = false;
-			errorCode = ErrorCode.MISSING_STRING;
-			throw new ArgsException();
-		}
 	}
 	
 	public int cardinality() 
@@ -329,7 +291,7 @@ public class Args
 	{
 		public abstract void set(Iterator<String> currentArgument) throws ArgsException;
 		
-		public abstract void set(String s) throws ArgsException;
+//		public abstract void set(String s) throws ArgsException;
 		
 		public abstract Object get();
 	}
@@ -343,10 +305,10 @@ public class Args
 			booleanValue = true;
 		}
 
-		public void set(String s)  throws ArgsException
-		{
+//		public void set(String s)  throws ArgsException
+//		{
 //			booleanValue = true;
-		}
+//		}
 		
 		public Object get()
 		{
@@ -360,12 +322,21 @@ public class Args
 		
 		public void set(Iterator<String> currentArgument) throws ArgsException 
 		{
+			try 
+			{
+				stringValue = currentArgument.next();
+			}
+			catch (NoSuchElementException e) 
+			{
+				errorCode = ErrorCode.MISSING_STRING;
+				throw new ArgsException();
+			}			
 		}
 		
-		public void set(String s) throws ArgsException 
-		{
-			stringValue = s;
-		}
+//		public void set(String s) throws ArgsException 
+//		{
+//			stringValue = s;
+//		}
 
 		public Object get() 
 		{
@@ -379,19 +350,36 @@ public class Args
 
 		public void set(Iterator<String> currentArgument) throws ArgsException 
 		{
-		}		
-		
-		public void set(String s) throws ArgsException
-		{
+			String parameter = null;
 			try 
 			{
-				integerValue = Integer.parseInt(s);
+				parameter = currentArgument.next();
+				integerValue = Integer.parseInt(parameter);
+			}
+			catch (NoSuchElementException e) 
+			{
+				errorCode = ErrorCode.MISSING_INTEGER;
+				throw new ArgsException();
 			} 
 			catch (NumberFormatException e) 
 			{
-				throw new ArgsException();
-			}
-		}
+				errorParameter = parameter;
+				errorCode = ErrorCode.INVALID_INTEGER;
+				throw e;
+			}			
+		}		
+		
+//		public void set(String s) throws ArgsException
+//		{
+//			try 
+//			{
+//				integerValue = Integer.parseInt(s);
+//			} 
+//			catch (NumberFormatException e) 
+//			{
+//				throw new ArgsException();
+//			}
+//		}
 
 		public Object get() 
 		{
