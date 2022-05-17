@@ -158,18 +158,7 @@ public class Args
 		
 		try
 		{
-			if (m instanceof BooleanArgumentMarshaler)
-			{
-				m.set(currentArgument);
-			}
-			else if (m instanceof StringArgumentMarshaler)
-			{
-				m.set(currentArgument);
-			}
-			else if (m instanceof IntegerArgumentMarshaler)
-			{
-				m.set(currentArgument);
-			}
+			m.set(currentArgument);
 		}
 		catch (ArgsException e) 
 		{
