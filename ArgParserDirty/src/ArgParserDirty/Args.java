@@ -6,29 +6,29 @@ import java.util.*;
 public class Args 
 {
 	private String schema;
-	private String[] args;
 	private boolean valid = true;
 	private Set<Character> unexpectedArguments = new TreeSet<Character>();
 	private Map<Character, ArgumentMarshaler> marshalers = new HashMap<Character, ArgumentMarshaler>();
 	private Set<Character> argsFound = new HashSet<Character>();
-	private int currentArgument;
+	private Iterator<String> currentArgument;
 	private char errorArgumentId = '\0';
 	private String errorParameter = "TILT";
 	private ErrorCode errorCode = ErrorCode.OK;
+	private List<String> argsList;
 	
 	enum ErrorCode {OK, MISSING_STRING, MISSING_INTEGER, INVALID_INTEGER, UNEXPECTED_ARGUMENT};
 	
 	public Args(String schema, String[] args) throws ParseException
 	{
 		this.schema = schema;
-		this.args = args;
+		argsList = Arrays.asList(args);
 		
 		valid = parse();
 	}
 
 	private boolean parse() throws ParseException 
 	{
-		if (schema.length() == 0 && args.length == 0)
+		if (schema.length() == 0 && argsList.size() == 0)
 		{
 			return true;
 		}
@@ -109,9 +109,9 @@ public class Args
 	
 	private boolean parseArguments() throws ArgsException 
 	{
-		for (currentArgument = 0; currentArgument < args.length; currentArgument++)
+		for (currentArgument = argsList.iterator(); currentArgument.hasNext(); )
 		{
-			String arg = args[currentArgument];
+			String arg = currentArgument.next();
 			parseArgument(arg);
 		}
 	
@@ -183,15 +183,14 @@ public class Args
 	
 	private void setIntArg(ArgumentMarshaler m) throws ArgsException 
 	{
-		currentArgument++;
 		String parameter = null;
-	
+
 		try 
 		{
-			parameter = args[currentArgument];
+			parameter = currentArgument.next();
 			m.set(parameter);
 		} 
-		catch (ArrayIndexOutOfBoundsException e) 
+		catch (NoSuchElementException e) 
 		{
 			valid = false;
 			errorCode = ErrorCode.MISSING_INTEGER;
@@ -208,12 +207,11 @@ public class Args
 	
 	private void setStringArg(ArgumentMarshaler m) throws ArgsException 
 	{
-		currentArgument++;
 		try 
 		{
-			m.set(args[currentArgument]);
+			m.set(currentArgument.next());
 		} 
-		catch (ArrayIndexOutOfBoundsException e) 
+		catch (NoSuchElementException e) 
 		{
 			valid = false;
 			errorCode = ErrorCode.MISSING_STRING;
