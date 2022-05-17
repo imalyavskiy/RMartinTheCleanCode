@@ -16,7 +16,7 @@ public class Args
 	private ErrorCode errorCode = ErrorCode.OK;
 	private List<String> argsList;
 	
-	enum ErrorCode {OK, MISSING_STRING, MISSING_INTEGER, INVALID_INTEGER, UNEXPECTED_ARGUMENT};
+	enum ErrorCode {OK, MISSING_STRING, MISSING_INTEGER, INVALID_INTEGER, UNEXPECTED_ARGUMENT, MISSING_DOUBLE, INVALID_DOUBLE};
 	
 	public Args(String schema, String[] args) throws ParseException
 	{
@@ -77,6 +77,10 @@ public class Args
 		else if (elementTail.equals("#")) 
 		{
 			marshalers.put(elementId, new IntegerArgumentMarshaler());
+		} 
+		else if (elementTail.equals("##")) 
+		{
+			marshalers.put(elementId, new DoubleArgumentMarshaler());
 		} 
 		else 
 		{
@@ -186,6 +190,10 @@ public class Args
 				return String.format("Argument -%c expects an integer but was '%s'.", errorArgumentId, errorParameter);
 			case MISSING_INTEGER:
 				return String.format("Could not find integer parameter for -%c.", errorArgumentId);
+			case INVALID_DOUBLE:
+				return String.format("Argument -%c expects a double but was '%s'.", errorArgumentId, errorParameter);
+			case MISSING_DOUBLE:
+				return String.format("Could not find double parameter for -%c.", errorArgumentId);				
 		}
 		return "";
 	}
@@ -245,6 +253,19 @@ public class Args
 		}
 		
 		return false;
+	}
+	
+	public double getDouble(char arg) 
+	{
+		Args.ArgumentMarshaler am = marshalers.get(arg);
+		try 
+		{
+			return am == null ? 0 : (Double) am.get();
+		} 
+		catch (Exception e) 
+		{
+			return 0.0;
+		}
 	}
 	
 	public boolean has(char arg) 
@@ -334,6 +355,37 @@ public class Args
 		public Object get() 
 		{
 			return integerValue;
+		}
+	}
+	
+	private class DoubleArgumentMarshaler implements ArgumentMarshaler 
+	{
+		private double doubleValue = 0;
+		
+		public void set(Iterator<String> currentArgument) throws ArgsException 
+		{
+			String parameter = null;
+			try 
+			{
+				parameter = currentArgument.next();
+				doubleValue = Double.parseDouble(parameter);
+			} 
+			catch (NoSuchElementException e) 
+			{
+				errorCode = ErrorCode.MISSING_DOUBLE;
+				throw new ArgsException();
+			} 
+			catch (NumberFormatException e) 
+			{
+				errorParameter = parameter;
+				errorCode = ErrorCode.INVALID_DOUBLE;
+				throw new ArgsException();
+			}
+		}
+		
+		public Object get() 
+		{
+			return doubleValue;
 		}
 	}
 }

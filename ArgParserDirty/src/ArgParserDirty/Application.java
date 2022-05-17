@@ -2,14 +2,14 @@ package ArgParserDirty;
 
 import java.text.ParseException;
 
-// "l,p#,d*" == "-l -p 65536 -d letsplay"
+// "l,p#,d*" == "-l -p 65536 -d letsplay -t 3.141592"
 
 public class Application {
 	public static void main(String[] args) throws Exception
 	{
 		try 
 		{
-			Args arg = new Args("l,p#,d*", args);
+			Args arg = new Args("l,p#,d*,t##", args);
 			if(!arg.isValid())
 			{
 				String error = arg.errorMessage();
@@ -20,9 +20,10 @@ public class Application {
 			boolean logging = arg.getBoolean('l');
 			int port = arg.getInt('p');
 			String directory = arg.getString('d');
+			double period = arg.getDouble('t');
 			
 			Application app = new Application();
-			app.execute(logging, port, directory);
+			app.execute(logging, port, directory, period);
 		} 
 		catch (ParseException e) 
 		{
@@ -35,8 +36,8 @@ public class Application {
 		
 	}
 	
-	private void execute(boolean logging, int port, String directory)
+	private void execute(boolean logging, int port, String directory, double period)
 	{
-		System.out.println(String.format("execute: logging=%b, port=%d, directory=%s", logging, port, directory));
+		System.out.println(String.format("execute: logging=%b, port=%d, directory=%s, period=%f", logging, port, directory, period));
 	}
 }

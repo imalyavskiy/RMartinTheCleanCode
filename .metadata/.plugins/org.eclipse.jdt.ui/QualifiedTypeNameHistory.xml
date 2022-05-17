@@ -11,4 +11,5 @@
     <fullyQualifiedTypeName name="ArgParserDirty.Args.ArgumentMarshaler"/>
     <fullyQualifiedTypeName name="java.lang.Boolean"/>
     <fullyQualifiedTypeName name="java.lang.ClassCastException"/>
+    <fullyQualifiedTypeName name="java.util.NoSuchElementException"/>
 </qualifiedTypeNameHistroy>
