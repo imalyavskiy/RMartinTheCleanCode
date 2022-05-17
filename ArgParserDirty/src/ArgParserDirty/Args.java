@@ -1,6 +1,5 @@
 package ArgParserDirty;
 
-import java.text.ParseException;
 import java.util.*;
 
 public class Args 
@@ -13,12 +12,10 @@ public class Args
 	private Iterator<String> currentArgument;
 	private char errorArgumentId = '\0';
 	private String errorParameter = "TILT";
-	private ErrorCode errorCode = ErrorCode.OK;
+	private ArgsException.ErrorCode errorCode = ArgsException.ErrorCode.OK;
 	private List<String> argsList;
-	
-	enum ErrorCode {OK, MISSING_STRING, MISSING_INTEGER, INVALID_INTEGER, UNEXPECTED_ARGUMENT, MISSING_DOUBLE, INVALID_DOUBLE};
-	
-	public Args(String schema, String[] args) throws ParseException
+
+	public Args(String schema, String[] args) throws ArgsException
 	{
 		this.schema = schema;
 		argsList = Arrays.asList(args);
@@ -26,7 +23,7 @@ public class Args
 		valid = parse();
 	}
 
-	private boolean parse() throws ParseException 
+	private boolean parse() throws ArgsException 
 	{
 		if (schema.length() == 0 && argsList.size() == 0)
 		{
@@ -46,7 +43,7 @@ public class Args
 		return valid;
 	}
 	
-	private boolean parseSchema() throws ParseException 
+	private boolean parseSchema() throws ArgsException 
 	{
 		for (String element : schema.split(",")) 
 		{
@@ -59,7 +56,7 @@ public class Args
 		return true;
 	}
 	
-	private void parseSchemaElement(String element) throws ParseException 
+	private void parseSchemaElement(String element) throws ArgsException 
 	{
 		char elementId = element.charAt(0);
 		String elementTail = element.substring(1);
@@ -84,15 +81,15 @@ public class Args
 		} 
 		else 
 		{
-			throw new ParseException(String.format("Argument: %c has invalid format: %s.", elementId, elementTail), 0);
+			throw new ArgsException(String.format("Argument: %c has invalid format: %s.", elementId, elementTail));
 		}
 	}
 	
-	private void validateSchemaElementId(char elementId) throws ParseException 
+	private void validateSchemaElementId(char elementId) throws ArgsException 
 	{
 		if (!Character.isLetter(elementId)) 
 		{
-			throw new ParseException("Bad character:" + elementId + "in Args format: " + schema, 0);
+			throw new ArgsException("Bad character:" + elementId + "in Args format: " + schema);
 		}
 	}
 	
@@ -132,7 +129,7 @@ public class Args
 		else 
 		{
 			unexpectedArguments.add(argChar);
-			errorCode = ErrorCode.UNEXPECTED_ARGUMENT;
+			errorCode = ArgsException.ErrorCode.UNEXPECTED_ARGUMENT;
 			valid = false;
 		}
 	}
@@ -278,10 +275,6 @@ public class Args
 		return valid;
 	}
 	
-	private class ArgsException extends Exception 
-	{
-	}
-	
 	private interface ArgumentMarshaler 
 	{
 		public abstract void set(Iterator<String> currentArgument) throws ArgsException;
@@ -316,7 +309,7 @@ public class Args
 			}
 			catch (NoSuchElementException e) 
 			{
-				errorCode = ErrorCode.MISSING_STRING;
+				errorCode = ArgsException.ErrorCode.MISSING_STRING;
 				throw new ArgsException();
 			}			
 		}
@@ -341,13 +334,13 @@ public class Args
 			}
 			catch (NoSuchElementException e) 
 			{
-				errorCode = ErrorCode.MISSING_INTEGER;
+				errorCode = ArgsException.ErrorCode.MISSING_INTEGER;
 				throw new ArgsException();
 			} 
 			catch (NumberFormatException e) 
 			{
 				errorParameter = parameter;
-				errorCode = ErrorCode.INVALID_INTEGER;
+				errorCode = ArgsException.ErrorCode.INVALID_INTEGER;
 				throw e;
 			}			
 		}		
@@ -372,13 +365,13 @@ public class Args
 			} 
 			catch (NoSuchElementException e) 
 			{
-				errorCode = ErrorCode.MISSING_DOUBLE;
+				errorCode = ArgsException.ErrorCode.MISSING_DOUBLE;
 				throw new ArgsException();
 			} 
 			catch (NumberFormatException e) 
 			{
 				errorParameter = parameter;
-				errorCode = ErrorCode.INVALID_DOUBLE;
+				errorCode = ArgsException.ErrorCode.INVALID_DOUBLE;
 				throw new ArgsException();
 			}
 		}
