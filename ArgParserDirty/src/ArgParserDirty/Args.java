@@ -276,16 +276,14 @@ public class Args
 	{
 	}
 	
-	private abstract class ArgumentMarshaler 
+	private interface ArgumentMarshaler 
 	{
 		public abstract void set(Iterator<String> currentArgument) throws ArgsException;
-		
-//		public abstract void set(String s) throws ArgsException;
 		
 		public abstract Object get();
 	}
 	
-	private class BooleanArgumentMarshaler extends ArgumentMarshaler 
+	private class BooleanArgumentMarshaler implements ArgumentMarshaler 
 	{
 		private boolean booleanValue = false;
 		
@@ -294,18 +292,13 @@ public class Args
 			booleanValue = true;
 		}
 
-//		public void set(String s)  throws ArgsException
-//		{
-//			booleanValue = true;
-//		}
-		
 		public Object get()
 		{
 			return booleanValue;
 		}
 	}
 	
-	private class StringArgumentMarshaler extends ArgumentMarshaler 
+	private class StringArgumentMarshaler implements ArgumentMarshaler 
 	{
 		private String stringValue;
 		
@@ -322,18 +315,13 @@ public class Args
 			}			
 		}
 		
-//		public void set(String s) throws ArgsException 
-//		{
-//			stringValue = s;
-//		}
-
 		public Object get() 
 		{
 			return stringValue;
 		}
 	}
 	
-	private class IntegerArgumentMarshaler extends ArgumentMarshaler 
+	private class IntegerArgumentMarshaler implements ArgumentMarshaler 
 	{
 		private int integerValue;
 
@@ -358,18 +346,6 @@ public class Args
 			}			
 		}		
 		
-//		public void set(String s) throws ArgsException
-//		{
-//			try 
-//			{
-//				integerValue = Integer.parseInt(s);
-//			} 
-//			catch (NumberFormatException e) 
-//			{
-//				throw new ArgsException();
-//			}
-//		}
-
 		public Object get() 
 		{
 			return integerValue;
