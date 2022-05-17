@@ -9,8 +9,6 @@ public class Args
 	private String[] args;
 	private boolean valid = true;
 	private Set<Character> unexpectedArguments = new TreeSet<Character>();
-	private Map<Character, StringArgumentMarshaler> stringArgs = new HashMap<Character, StringArgumentMarshaler>();
-	private Map<Character, IntegerArgumentMarshaler> intArgs = new HashMap<Character, IntegerArgumentMarshaler>();
 	private Map<Character, ArgumentMarshaler> marshalers = new HashMap<Character, ArgumentMarshaler>();
 	private Set<Character> argsFound = new HashSet<Character>();
 	private int currentArgument;
@@ -96,22 +94,17 @@ public class Args
 	
 	private void parseBooleanSchemaElement(char elementId) 
 	{
-		BooleanArgumentMarshaler m = new BooleanArgumentMarshaler();
-		marshalers.put(elementId, m);
+		marshalers.put(elementId, new BooleanArgumentMarshaler());
 	}
 	
 	private void parseIntegerSchemaElement(char elementId) 
 	{
-		IntegerArgumentMarshaler m = new IntegerArgumentMarshaler();
-		marshalers.put(elementId, m);
-		intArgs.put(elementId, m);
+		marshalers.put(elementId, new IntegerArgumentMarshaler());
 	}
 	
 	private void parseStringSchemaElement(char elementId) 
 	{
-		StringArgumentMarshaler m = new StringArgumentMarshaler();
-		marshalers.put(elementId, m);
-		stringArgs.put(elementId, m);
+		marshalers.put(elementId, new StringArgumentMarshaler());
 	}
 	
 	private boolean isStringSchemaElement(String elementTail) 
@@ -304,31 +297,46 @@ public class Args
 	
 	public String getString(char arg)
 	{
-		Args.ArgumentMarshaler am = stringArgs.get(arg);
-		return am == null ? "" : (String)am.get();
+		Args.ArgumentMarshaler am = marshalers.get(arg);
+		
+		try
+		{
+			return am == null ? "" : (String)am.get();
+		}
+		catch(ClassCastException e)
+		{
+		}
+		
+		return "";
 	}
 	
 	public int getInt(char arg) 
 	{
-		Args.ArgumentMarshaler am = intArgs.get(arg);
-		return am == null ? 0 : (Integer)am.get();
+		Args.ArgumentMarshaler am = marshalers.get(arg);
+		try 
+		{
+			return am == null ? 0 : (Integer)am.get();
+		}
+		catch(ClassCastException e)
+		{
+		}
+		
+		return 0;
 	}
 		
 	public boolean getBoolean(char arg) 
 	{
 		Args.ArgumentMarshaler am = marshalers.get(arg);
 
-		boolean b = false;
 		try
 		{
-			b = am != null && (Boolean)am.get();
+			return am != null && (Boolean)am.get();
 		}
 		catch(ClassCastException e)
 		{
-			b = false;
 		}
 		
-		return b;
+		return false;
 	}
 	
 	public boolean has(char arg) 
