@@ -151,12 +151,16 @@ public class Args
 	private boolean setArgument(char argChar) throws ArgsException
 	{
 		ArgumentMarshaler m = marshalers.get(argChar);
+		if(m == null)
+		{
+			return false;
+		}
 		
 		try
 		{
 			if (m instanceof BooleanArgumentMarshaler)
 			{
-				setBooleanArg(m);
+				m.set(currentArgument);
 			}
 			else if (m instanceof StringArgumentMarshaler)
 			{
@@ -165,10 +169,6 @@ public class Args
 			else if (m instanceof IntegerArgumentMarshaler)
 			{
 				setIntArg(m);
-			}
-			else
-			{
-				return false;
 			}
 		}
 		catch (ArgsException e) 
@@ -216,17 +216,6 @@ public class Args
 			valid = false;
 			errorCode = ErrorCode.MISSING_STRING;
 			throw new ArgsException();
-		}
-	}
-	
-	private void setBooleanArg(ArgumentMarshaler m) 
-	{
-		try
-		{
-			m.set("true");
-		}
-		catch(ArgsException e)
-		{
 		}
 	}
 	
@@ -338,6 +327,8 @@ public class Args
 	
 	private abstract class ArgumentMarshaler 
 	{
+		public abstract void set(Iterator<String> currentArgument) throws ArgsException;
+		
 		public abstract void set(String s) throws ArgsException;
 		
 		public abstract Object get();
@@ -346,10 +337,15 @@ public class Args
 	private class BooleanArgumentMarshaler extends ArgumentMarshaler 
 	{
 		private boolean booleanValue = false;
+		
+		public void set(Iterator<String> currentArgument) throws ArgsException 
+		{
+			booleanValue = true;
+		}
 
 		public void set(String s)  throws ArgsException
 		{
-			booleanValue = true;
+//			booleanValue = true;
 		}
 		
 		public Object get()
@@ -361,6 +357,10 @@ public class Args
 	private class StringArgumentMarshaler extends ArgumentMarshaler 
 	{
 		private String stringValue;
+		
+		public void set(Iterator<String> currentArgument) throws ArgsException 
+		{
+		}
 		
 		public void set(String s) throws ArgsException 
 		{
@@ -377,6 +377,10 @@ public class Args
 	{
 		private int integerValue;
 
+		public void set(Iterator<String> currentArgument) throws ArgsException 
+		{
+		}		
+		
 		public void set(String s) throws ArgsException
 		{
 			try 
