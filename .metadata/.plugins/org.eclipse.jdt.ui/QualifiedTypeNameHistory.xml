@@ -4,7 +4,6 @@
     <fullyQualifiedTypeName name="java.lang.ExceptionInInitializerError"/>
     <fullyQualifiedTypeName name="javax.print.attribute.SetOfIntegerSyntax"/>
     <fullyQualifiedTypeName name="java.util.Map"/>
-    <fullyQualifiedTypeName name="ArgParserDirty.Args.ArgsException"/>
     <fullyQualifiedTypeName name="ArgParserDirty.Args.BooleanArgumentMarshaler"/>
     <fullyQualifiedTypeName name="ArgParserDirty.Args.StringArgumentMarshaler"/>
     <fullyQualifiedTypeName name="ArgParserDirty.Args.IntegerArgumentMarshaler"/>
@@ -12,4 +11,5 @@
     <fullyQualifiedTypeName name="java.lang.Boolean"/>
     <fullyQualifiedTypeName name="java.lang.ClassCastException"/>
     <fullyQualifiedTypeName name="java.util.NoSuchElementException"/>
+    <fullyQualifiedTypeName name="ArgParserDirty.Args.ArgsException"/>
 </qualifiedTypeNameHistroy>

@@ -1,39 +1,27 @@
 package ArgParserDirty;
 
-import java.text.ParseException;
-
 // "l,p#,d*" == "-l -p 65536 -d letsplay -t 3.141592"
 
 public class Application {
 	public static void main(String[] args) throws Exception
 	{
-		try 
+		Args arg;
+
+		try
 		{
-			Args arg = new Args("l,p#,d*,t##", args);
-			if(!arg.isValid())
-			{
-				String error = arg.errorMessage();
-				throw new Exception(error);
-			}
-			
-			
-			boolean logging = arg.getBoolean('l');
-			int port = arg.getInt('p');
-			String directory = arg.getString('d');
-			double period = arg.getDouble('t');
-			
-			Application app = new Application();
-			app.execute(logging, port, directory, period);
-		} 
-		catch (ParseException e) 
-		{
-			System.out.printf("Argument error: %s\n", e.getMessage());
+			arg = new Args("l,p#,d*,t##", args);
 		}
-		catch (Exception e)
+		catch (ArgsException e) 
 		{
-			System.out.printf(e.getMessage());
+			System.out.printf(e.errorMessage());
 		}
-		
+		boolean logging = arg.getBoolean('l');
+		int port = arg.getInt('p');
+		String directory = arg.getString('d');
+		double period = arg.getDouble('t');
+
+		Application app = new Application();
+		app.execute(logging, port, directory, period);
 	}
 	
 	private void execute(boolean logging, int port, String directory, double period)

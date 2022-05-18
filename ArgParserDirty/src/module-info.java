@@ -1,2 +1,3 @@
 module ArgParserDirty {
+	requires junit;
 }
