@@ -31,9 +31,9 @@ public class ComparisonCompactorDirty
 		
 		findCommonPrefix();
 		findCommonSuffix();
-		String expected = compactString(this.expected);
-		String actual = compactString(this.actual);
-		return Assert.format(message, expected, actual);
+		String compactExpected = compactString(expected);
+		String compactActual = compactString(actual);
+		return Assert.format(message, compactExpected, compactActual);
 	}
 	
 	private boolean shouldNotCompact() {
