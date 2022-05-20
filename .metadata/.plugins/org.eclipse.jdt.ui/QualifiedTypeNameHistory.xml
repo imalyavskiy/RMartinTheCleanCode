@@ -12,4 +12,7 @@
     <fullyQualifiedTypeName name="java.lang.ClassCastException"/>
     <fullyQualifiedTypeName name="java.util.NoSuchElementException"/>
     <fullyQualifiedTypeName name="ArgParserDirty.Args.ArgsException"/>
+    <fullyQualifiedTypeName name="junit.framework.Assert"/>
+    <fullyQualifiedTypeName name="ch15_JUnit_ComparisonCompactor.ComparisonCompactorOriginal"/>
+    <fullyQualifiedTypeName name="junit.framework.TestCase"/>
 </qualifiedTypeNameHistroy>
