@@ -5,7 +5,7 @@ package ArgParserDirty;
 public class Application {
 	public static void main(String[] args) throws Exception
 	{
-		Args arg;
+		Args arg = null;
 
 		try
 		{
@@ -15,6 +15,7 @@ public class Application {
 		{
 			System.out.printf(e.errorMessage());
 		}
+		
 		boolean logging = arg.getBoolean('l');
 		int port = arg.getInt('p');
 		String directory = arg.getString('d');
