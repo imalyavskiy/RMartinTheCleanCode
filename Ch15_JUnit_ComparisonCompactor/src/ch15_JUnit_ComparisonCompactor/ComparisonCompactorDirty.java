@@ -22,7 +22,7 @@ public class ComparisonCompactorDirty
 		this.actual = actual;
 	}
 
-	public String compact(String message) 
+	public String formatCompactedComparison(String message) 
 	{
 		if (shouldBeCompacted())
 		{
